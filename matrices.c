@@ -184,26 +184,26 @@ void echelonForm(float **matrix, int rows, int cols)
     // fine algoritmo di riduzione
 
 
-    void firstNonZero(float **matrix, int rows, int cols, int startingRow, int coords[2])
-    { // ritorna la riga alla quale si trova il primo elemento diverso da zero muovendosi colonna per colonna, a partire dalla riga passata come ultimo argomento
+}
+void firstNonZero(float **matrix, int rows, int cols, int startingRow, int coords[2])
+{ // ritorna la riga alla quale si trova il primo elemento diverso da zero muovendosi colonna per colonna, a partire dalla riga passata come ultimo argomento
 
-        for (int j = 0; j < cols; j++) // ciclo sulle colonne
+    for (int j = 0; j < cols; j++) // ciclo sulle colonne
+    {
+        for (int i = startingRow; i < rows; i++)
         {
-            for (int i = startingRow; i < rows; i++)
+            if (matrix[i][j] != 0)
             {
-                if (matrix[i][j] != 0)
-                {
-                    coords[0] = i;
-                    coords[1] = j;
-                    return;
-                }
+                coords[0] = i;
+                coords[1] = j;
+                return;
             }
         }
-
-        coords[0] = rows + 1;
-        coords[1] = cols + 1;
-        return; // se non trova elementi non-zero, ritorna una riga fuori dallo scope (triggerando la condizione sentinella)
     }
+
+    coords[0] = rows + 1;
+    coords[1] = cols + 1;
+    return; // se non trova elementi non-zero, ritorna una riga fuori dallo scope (triggerando la condizione sentinella)
 }
 
 
