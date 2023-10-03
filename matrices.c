@@ -48,6 +48,7 @@ void printMatrix(float **matrix, int rows, int cols)
         }
         printf("|\n");
     }
+    printf("\n");
 }
 
 void dumpMatrix(float **matrix, int rows)
@@ -112,19 +113,97 @@ void multiplyRow(float **matrix, int row, int cols, float factor)
     }
 }
 
-void combineRows(float **matrix, int row1, int row2, int factor, int cols)
+void combineRows(float **matrix, int row1, int row2, float factor, int cols) //<-- bug here?
 { // somma row2*factor a row1 (i cambiamenti avvengono in row1)
     for (int j = 0; j < cols; j++)
     {
+        printf("calcolo: %f + (%f * %f) = %f, ", matrix[row1][j], factor, matrix[row2][j], matrix[row1][j] + factor * matrix[row2][j]);
         matrix[row1][j] += factor * matrix[row2][j];
     }
+    printf("\n");
 }
 
 void swapRows(float **matrix, int row1, int row2, int cols)
 { // scambia di posti riga 1 e riga 2
+    float temp;
 
-    float *tempPtr;
-    tempPtr = matrix[row1];
-    matrix[row1] = matrix[row2];
-    matrix[row2] = tempPtr;
+    for(int i = 0; i < cols; i++) 
+    {
+        temp = matrix[row2][i];
+        matrix[row2][i] = matrix[row1][i];
+        matrix[row1][i] = temp;
+    }
 }
+
+void echelonForm(float **matrix, int rows, int cols)
+{ // funzione per la riduzione a scala di una matrice
+
+    // prototipo di funzione con scope minimo
+    void firstNonZero(float **matrix, int rows, int cols, int startingRow, int coords[2]);
+
+    int nonZeroRow, pivotCol; // variabili per la leggibilità
+    int row = 0;              // indica la riga alla quale si sta lavorando
+    int coords[2];            // array delle coordinate del pivot sul quale si sta lavorando
+    float coefficient;
+    int i = 0;
+
+    do
+    {
+        firstNonZero(matrix, rows, cols, row, coords);
+        nonZeroRow = coords[0];
+        pivotCol = coords[1];
+
+        if (nonZeroRow > rows)
+        {
+            break;
+        }
+
+        if (nonZeroRow != row)
+        {
+            swapRows(matrix, row, nonZeroRow, cols);
+            nonZeroRow = row;
+        }
+
+        i = nonZeroRow + 1;
+        while (i < rows)
+        {
+            printf("Passaggio %d:\n", i);
+            if (matrix[i][pivotCol] != 0)
+            {
+                coefficient = -(matrix[i][pivotCol] / matrix[nonZeroRow][pivotCol]);
+                printf("coefficient: %f\n", coefficient);
+
+                combineRows(matrix, i, nonZeroRow, coefficient, cols);
+                printMatrix(matrix, rows, cols);
+            }
+
+            i++;
+        }
+        row++;
+    } while (coords[0] < rows);
+    // fine algoritmo di riduzione
+
+
+    void firstNonZero(float **matrix, int rows, int cols, int startingRow, int coords[2])
+    { // ritorna la riga alla quale si trova il primo elemento diverso da zero muovendosi colonna per colonna, a partire dalla riga passata come ultimo argomento
+
+        for (int j = 0; j < cols; j++) // ciclo sulle colonne
+        {
+            for (int i = startingRow; i < rows; i++)
+            {
+                if (matrix[i][j] != 0)
+                {
+                    coords[0] = i;
+                    coords[1] = j;
+                    return;
+                }
+            }
+        }
+
+        coords[0] = rows + 1;
+        coords[1] = cols + 1;
+        return; // se non trova elementi non-zero, ritorna una riga fuori dallo scope (triggerando la condizione sentinella)
+    }
+}
+
+
