@@ -74,7 +74,7 @@ float **traspose(float **matrix, int rows, int cols, float **trasposed)
 }
 
 float **dotProduct(float **product, float **matrix1, int rows1, int cols1, float **matrix2, int rows2, int cols2)
-{//il primo argomento è il template per il prodotto, ha dimensioni rows1*cols2
+{ // il primo argomento è il template per il prodotto, ha dimensioni rows1*cols2
 
     if (cols1 != rows2)
     {
@@ -114,7 +114,7 @@ void multiplyRow(float **matrix, int row, int cols, float factor)
 }
 
 void combineRows(float **matrix, int row1, int row2, float factor, int cols) //<-- bug here?
-{ // somma row2*factor a row1 (i cambiamenti avvengono in row1)
+{                                                                            // somma row2*factor a row1 (i cambiamenti avvengono in row1)
     for (int j = 0; j < cols; j++)
     {
         matrix[row1][j] += factor * matrix[row2][j];
@@ -126,7 +126,7 @@ void swapRows(float **matrix, int row1, int row2, int cols)
 { // scambia di posti riga 1 e riga 2
     float temp;
 
-    for(int i = 0; i < cols; i++) 
+    for (int i = 0; i < cols; i++)
     {
         temp = matrix[row2][i];
         matrix[row2][i] = matrix[row1][i];
@@ -140,22 +140,18 @@ void echelonForm(float **matrix, int rows, int cols)
     // prototipo di funzione con scope minimo
     void firstNonZero(float **matrix, int rows, int cols, int startingRow, int coords[2]);
 
-    int nonZeroRow, pivotCol; // variabili per la leggibilità
-    int row = 0;              // indica la riga alla quale si sta lavorando
-    int coords[2];            // array delle coordinate del pivot sul quale si sta lavorando
+    int i;
+    int pivotCol;
+    int nonZeroRow = 0; // contiene l'indice della riga con primo elemento non nullo, in ordine di colonna
+    int row = 0;        // indica la riga alla quale si sta lavorando
+    int coords[2];      // array delle coordinate del pivot sul quale si sta lavorando
     float coefficient;
-    int i = 0;
 
-    do
+    while (row < rows)
     {
         firstNonZero(matrix, rows, cols, row, coords);
         nonZeroRow = coords[0];
         pivotCol = coords[1];
-
-        if (nonZeroRow > rows)
-        {
-            break;
-        }
 
         if (nonZeroRow != row)
         {
@@ -175,11 +171,9 @@ void echelonForm(float **matrix, int rows, int cols)
             i++;
         }
         row++;
-    } while (coords[0] < rows);
-    // fine algoritmo di riduzione
-
-
+    }
 }
+
 void firstNonZero(float **matrix, int rows, int cols, int startingRow, int coords[2])
 { // ritorna la riga alla quale si trova il primo elemento diverso da zero muovendosi colonna per colonna, a partire dalla riga passata come ultimo argomento
 
@@ -200,5 +194,3 @@ void firstNonZero(float **matrix, int rows, int cols, int startingRow, int coord
     coords[1] = cols + 1;
     return; // se non trova elementi non-zero, ritorna una riga fuori dallo scope (triggerando la condizione sentinella)
 }
-
-
