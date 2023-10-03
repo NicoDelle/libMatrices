@@ -44,7 +44,7 @@ void printMatrix(float **matrix, int rows, int cols)
 
         for (int j = 0; j < cols; j++)
         {
-            printf("%.2f ", matrix[i][j]);
+            printf("%02.2f ", matrix[i][j]);
         }
         printf("|\n");
     }
@@ -117,7 +117,6 @@ void combineRows(float **matrix, int row1, int row2, float factor, int cols) //<
 { // somma row2*factor a row1 (i cambiamenti avvengono in row1)
     for (int j = 0; j < cols; j++)
     {
-        printf("calcolo: %f + (%f * %f) = %f, ", matrix[row1][j], factor, matrix[row2][j], matrix[row1][j] + factor * matrix[row2][j]);
         matrix[row1][j] += factor * matrix[row2][j];
     }
     printf("\n");
@@ -167,14 +166,10 @@ void echelonForm(float **matrix, int rows, int cols)
         i = nonZeroRow + 1;
         while (i < rows)
         {
-            printf("Passaggio %d:\n", i);
             if (matrix[i][pivotCol] != 0)
             {
                 coefficient = -(matrix[i][pivotCol] / matrix[nonZeroRow][pivotCol]);
-                printf("coefficient: %f\n", coefficient);
-
                 combineRows(matrix, i, nonZeroRow, coefficient, cols);
-                printMatrix(matrix, rows, cols);
             }
 
             i++;
