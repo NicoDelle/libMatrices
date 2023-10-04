@@ -138,12 +138,12 @@ void echelonForm(float **matrix, int rows, int cols)
     // prototipo di funzione con scope minimo
     void firstNonZero(float **matrix, int rows, int cols, int startingRow, int coords[2]);
 
-    int i;              // iteratore del  while sulle righe
-    int pivotCol;       // memorizza la colonna del pivot su cui si sta correntemente lavorando
-    int nonZeroRow = 0; // contiene l'indice della riga con primo elemento non nullo, in ordine di colonna
-    int row = 0;        // indica la riga alla quale si sta lavorando
-    int coords[2];      // array delle coordinate del pivot sul quale si sta lavorando
-    float coefficient;  // coefficiente moltiplicativo
+    int i;             // iteratore del  while sulle righe
+    int pivotCol;      // memorizza la colonna del pivot su cui si sta correntemente lavorando
+    int nonZeroRow;    // contiene l'indice della riga con primo elemento non nullo, in ordine di colonna
+    int row = 0;       // indica la riga alla quale si sta lavorando
+    int coords[2];     // array delle coordinate del pivot sul quale si sta lavorando
+    float coefficient; // coefficiente moltiplicativo
 
     while (row < rows)
     {
@@ -151,7 +151,7 @@ void echelonForm(float **matrix, int rows, int cols)
         nonZeroRow = coords[0];
         pivotCol = coords[1];
 
-        if (nonZeroRow != row)
+        if (nonZeroRow != row) // porto in cima (alla parte di matrice non ridotta) la riga col pivot, e sistemo le coordinate
         {
             swapRows(matrix, row, nonZeroRow, cols);
             nonZeroRow = row;

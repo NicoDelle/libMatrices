@@ -3,6 +3,9 @@ sintassi per fare/aggiornare la libreria
 gcc -c {file}.c -o {objfile}.o
 ar rcs lib{mylib}.a {objfile1}.o {{objfile2}.o {objfile3}.o}
 
+bugs:
+la riduzione funziona, ma (per le 3 prove che ho fatto), solo se cols <= rows.
+
 per me-->
 gcc -c matrices.c -o matrices.o
 ar rcs libMatrices.a matrices.o
