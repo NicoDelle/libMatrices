@@ -145,7 +145,7 @@ void echelonForm(float **matrix, int rows, int cols)
     int coords[2];     // array delle coordinate del pivot sul quale si sta lavorando
     float coefficient; // coefficiente moltiplicativo
 
-    while (row < rows)
+    while (row < rows - 1) // è inutile lavorare sull'ultima riga
     {
         firstNonZero(matrix, rows, cols, row, coords);
         nonZeroRow = coords[0];
@@ -168,6 +168,7 @@ void echelonForm(float **matrix, int rows, int cols)
 
             i++;
         }
+
         row++;
     }
 }
