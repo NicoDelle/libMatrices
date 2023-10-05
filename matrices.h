@@ -7,3 +7,4 @@ void multiplyRow(float **matrix, int row, int cols, float factor);
 void combineRows(float **matrix, int row1, int row2, float factor, int cols);
 void swapRows(float **matrix, int row1, int row2, int cols);
 void echelonForm(float **matrix, int rows, int cols);
+void GaussJordanForm(float **matrix, int rows, int cols);

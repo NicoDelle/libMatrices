@@ -195,3 +195,45 @@ void firstNonZero(float **matrix, int rows, int cols, int startingRow, int coord
     coords[1] = cols + 1;
     return;
 }
+
+//da una matrice la riduce prima a scala e poi a matrice totalmente ridotta
+void GaussJordanForm(float **matrix, int rows, int cols)
+{
+    int pivotCol;      // memorizza la colonna del pivot su cui si sta correntemente lavorando
+    int row = 0;       // indica la riga alla quale si sta lavorando
+    int coords[2];     // array delle coordinate del pivot sul quale si sta lavorando
+    float coefficient; // coefficiente moltiplicativo
+
+    echelonForm(matrix, rows, cols);
+    for(int i=rows-1; i>=0; i--)
+    {
+        for(int j=0; j<cols; j++)
+        {
+            if(matrix[i][j])
+            {
+                printf("i: %d\n", i);
+                coefficient = 1/matrix[i][j];
+                printf("prima:\n");
+                printMatrix(matrix, rows, cols);
+                multiplyRow(matrix, i, cols, coefficient);
+                printf("dopo:\n");
+                printMatrix(matrix, rows, cols);
+                printf("i: %d\n", i);
+                int k = i-1;
+                
+                while(k>=0)
+                {
+                    printf("controllo della riga %d con la riga %d\n", k, i);
+                    if(matrix[k][j])
+                    {
+                        coefficient = -matrix[k][j];
+                        combineRows(matrix, k, i, coefficient, cols);
+                    }
+                    k--;
+                }
+                
+                break;
+            }
+        }
+    }
+}
