@@ -16,11 +16,8 @@ float **buildMatrix(int rows, int cols, int zeros)
         {
             if (!zeros)
             {
-                int k;
                 printf("Inserisci il valore M[%d][%d]: ", i, j);
-                scanf("%d", &k);
-
-                matrix[i][j] = k;
+                scanf("%f", matrix[i][j]);
             }
             else
             {
