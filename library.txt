@@ -10,5 +10,8 @@ per me-->
 gcc -c matrices.c -o matrices.o;
 ar rcs libMatrices.a matrices.o;
 
+oppure:
+cd libMatrices && gcc -c matrices.c -o matrices.o && ar rcs libMatrices.a matrices.o && cd ..
+
 to run-->
-gcc -o mat Matrices.c libMatrices\matrices.c -IlibMatrices
+gcc -g -o mat Matrices.c libMatrices\matrices.c -IlibMatrices
