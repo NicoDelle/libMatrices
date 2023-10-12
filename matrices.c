@@ -3,7 +3,7 @@
 #define ZEROS 1
 #define EMPTY 0
 
-// riceve in input righe e colonne, restituisce un array di array (o un pointer a una sequenza di pointers che puntano a sequenze di interi)
+//function that builds a matrix. The last argument is a flag that indicates if the matrix should be filled with zeros or not
 float **buildMatrix(int rows, int cols, int zeros)
 {
     float **matrix;
@@ -17,7 +17,7 @@ float **buildMatrix(int rows, int cols, int zeros)
             if (!zeros)
             {
                 printf("Inserisci il valore M[%d][%d]: ", i, j);
-                scanf("%f", matrix[i][j]);
+                scanf("%f", &matrix[i][j]);
             }
             else
             {
@@ -29,7 +29,7 @@ float **buildMatrix(int rows, int cols, int zeros)
     return matrix;
 }
 
-// stampa una matrice formattata leggibilmente
+//function that prints a matrix
 void printMatrix(float **matrix, int rows, int cols)
 {
     for (int i = 0; i < rows; i++)
@@ -37,7 +37,7 @@ void printMatrix(float **matrix, int rows, int cols)
         printf("| ");
         for (int j = 0; j < cols; j++)
         {
-            printf("%02.2f ", matrix[i][j]);
+            printf("%4.2f ", matrix[i][j]);
         }
         printf("|\n");
     }
@@ -45,7 +45,7 @@ void printMatrix(float **matrix, int rows, int cols)
     printf("\n");
 }
 
-// libera la memoria allocata per una matrice
+//function that frees the memory allocated for a matrix
 void dumpMatrix(float **matrix, int rows)
 {
     for (int i = 0; i < rows; i++)
@@ -55,7 +55,7 @@ void dumpMatrix(float **matrix, int rows)
     free(matrix);
 }
 
-// Traspone una matrice. L'ultimo argomento è il template della trasposta vuoto (dimensioni cols*rows)
+//function that trasposes a matrix. The last argument is a pointer to the (cols*rows) matrix where the trasposed matrix will be stored
 float **traspose(float **matrix, int rows, int cols, float **trasposed)
 {
     for (int i = 0; i < rows; i++)
@@ -69,8 +69,8 @@ float **traspose(float **matrix, int rows, int cols, float **trasposed)
     return trasposed;
 }
 
-// il primo argomento è il template per il prodotto, ha dimensioni rows1*cols2
-float **dotProduct(float **product, float **matrix1, int rows1, int cols1, float **matrix2, int rows2, int cols2)
+//function that computes the product of two matrices. The function returns a pointer to the product matrix, the last argument ist also a pointer to the (rows1*cols2) matrix where the product will be stored
+float **dotProduct(float **matrix1, int rows1, int cols1, float **matrix2, int rows2, int cols2, float **product)
 {
     if (cols1 != rows2)
     {
@@ -99,7 +99,7 @@ float **dotProduct(float **product, float **matrix1, int rows1, int cols1, float
     return product;
 }
 
-// moltiplica la riga di una matrice per un fattore dato
+//function that multiplies a row of a matrix by a factor
 void multiplyRow(float **matrix, int row, int cols, float factor)
 {
     for (int j = 0; j < cols; j++)
@@ -108,7 +108,7 @@ void multiplyRow(float **matrix, int row, int cols, float factor)
     }
 }
 
-// somma row2*factor a row1 (i cambiamenti avvengono in row1)
+//function that combines two rows of a matrix, multiplying one of them by a factor. The result is stored in row1, while factor multiplies row2.
 void combineRows(float **matrix, int row1, int row2, float factor, int cols)
 {
     for (int j = 0; j < cols; j++)
@@ -117,7 +117,7 @@ void combineRows(float **matrix, int row1, int row2, float factor, int cols)
     }
 }
 
-// scambia di posti riga 1 e riga 2
+//function that swaps two rows of a matrix
 void swapRows(float **matrix, int row1, int row2, int cols)
 {
     float temp;
@@ -129,7 +129,7 @@ void swapRows(float **matrix, int row1, int row2, int cols)
     }
 }
 
-// funzione per la riduzione a scala di una matrice
+//function that reduces a matrix to its echelon form, using the Gauss algorithm
 void echelonForm(float **matrix, int rows, int cols)
 {
     // prototipo di funzione con scope minimo
@@ -170,7 +170,7 @@ void echelonForm(float **matrix, int rows, int cols)
     }
 }
 
-// ritorna la riga alla quale si trova il primo elemento diverso da zero muovendosi colonna per colonna, a partire dalla riga passata come ultimo argomento
+//functions that returns the first non-zero element of a matrix, starting from a given row
 void firstNonZero(float **matrix, int rows, int cols, int startingRow, int coords[2])
 {
     for (int j = 0; j < cols; j++) // ciclo sulle colonne
@@ -193,9 +193,11 @@ void firstNonZero(float **matrix, int rows, int cols, int startingRow, int coord
     return;
 }
 
-//da una matrice la riduce prima a scala e poi a matrice totalmente ridotta
+//function that totally reduces a matrix to its reduced row echelon form, using the Gauss-Jordan algorithm
 void GaussJordanForm(float **matrix, int rows, int cols)
 {
+    void swapColumns(float **matrix, int col1, int col2, int cols,  int rows);
+
     int pivotCol;      // memorizza la colonna del pivot su cui si sta correntemente lavorando
     int row = 0;       // indica la riga alla quale si sta lavorando
     int coords[2];     // array delle coordinate del pivot sul quale si sta lavorando
@@ -208,19 +210,12 @@ void GaussJordanForm(float **matrix, int rows, int cols)
         {
             if(matrix[i][j])
             {
-                printf("i: %d\n", i);
                 coefficient = 1/matrix[i][j];
-                printf("prima:\n");
-                printMatrix(matrix, rows, cols);
                 multiplyRow(matrix, i, cols, coefficient);
-                printf("dopo:\n");
-                printMatrix(matrix, rows, cols);
-                printf("i: %d\n", i);
                 int k = i-1;
                 
                 while(k>=0)
                 {
-                    printf("controllo della riga %d con la riga %d\n", k, i);
                     if(matrix[k][j])
                     {
                         coefficient = -matrix[k][j];
@@ -232,5 +227,17 @@ void GaussJordanForm(float **matrix, int rows, int cols)
                 break;
             }
         }
+    }
+}
+
+//function that swaps two columns of a matrix
+void swapColumns(float **matrix, int col1, int col2, int rows, int cols)
+{
+    float temp;
+    for(int i=0; i<rows; i++)
+    {
+        temp = matrix[i][col2];
+        matrix[i][col2] = matrix[i][col1];
+        matrix[i][col1] = temp;
     }
 }
