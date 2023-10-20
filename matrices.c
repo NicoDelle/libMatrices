@@ -4,7 +4,7 @@
 #define ZEROS 1
 #define EMPTY 0
 
-//function that builds a matrix. The last argument is a flag that indicates if the matrix should be filled with zeros or not
+// function that builds a matrix. The last argument is a flag that indicates if the matrix should be filled with zeros or not
 float **buildMatrix(int rows, int cols, int zeros)
 {
     float **matrix;
@@ -30,7 +30,7 @@ float **buildMatrix(int rows, int cols, int zeros)
     return matrix;
 }
 
-//function that prints a matrix
+// function that prints a matrix
 void printMatrix(Matrix matrix)
 {
     for (int i = 0; i < matrix.rows; i++)
@@ -46,7 +46,7 @@ void printMatrix(Matrix matrix)
     printf("\n");
 }
 
-//function that frees the memory allocated for a matrix
+// function that frees the memory allocated for a matrix
 void dumpMatrix(Matrix matrix)
 {
     for (int i = 0; i < matrix.rows; i++)
@@ -56,7 +56,7 @@ void dumpMatrix(Matrix matrix)
     free(matrix.matrix);
 }
 
-//function that trasposes a matrix. The last argument is a pointer to the (cols*rows) matrix where the trasposed matrix will be stored
+// function that trasposes a matrix. The last argument is a pointer to the (cols*rows) matrix where the trasposed matrix will be stored
 Matrix traspose(Matrix matrix)
 {
     Matrix trasposed;
@@ -75,7 +75,7 @@ Matrix traspose(Matrix matrix)
     return trasposed;
 }
 
-//function that computes the product of two matrices. The function returns a pointer to the product matrix, the last argument ist also a pointer to the (rows1*cols2) matrix where the product will be stored
+// function that computes the product of two matrices. The function returns a pointer to the product matrix, the last argument ist also a pointer to the (rows1*cols2) matrix where the product will be stored
 Matrix dotProduct(Matrix matrix1, Matrix matrix2)
 {
     Matrix product;
@@ -103,7 +103,7 @@ Matrix dotProduct(Matrix matrix1, Matrix matrix2)
     return product;
 }
 
-//function that multiplies a row of a matrix by a factor
+// function that multiplies a row of a matrix by a factor
 void multiplyRow(Matrix matrix, int row, float factor)
 {
     for (int j = 0; j < matrix.cols; j++)
@@ -112,7 +112,7 @@ void multiplyRow(Matrix matrix, int row, float factor)
     }
 }
 
-//function that combines two rows of a matrix, multiplying one of them by a factor. The result is stored in row1, while factor multiplies row2.
+// function that combines two rows of a matrix, multiplying one of them by a factor. The result is stored in row1, while factor multiplies row2.
 void combineRows(Matrix matrix, int row1, int row2, float factor)
 {
     for (int j = 0; j < matrix.cols; j++)
@@ -121,7 +121,7 @@ void combineRows(Matrix matrix, int row1, int row2, float factor)
     }
 }
 
-//function that swaps two rows of a matrix
+// function that swaps two rows of a matrix
 void swapRows(Matrix matrix, int row1, int row2)
 {
     float temp;
@@ -133,12 +133,48 @@ void swapRows(Matrix matrix, int row1, int row2)
     }
 }
 
-//function that reduces a matrix to its echelon form, using the Gauss algorithm
+// functions that returns the first non-zero element of a matrix, starting from a given row
+void firstNonZero(Matrix matrix, int startingRow, int coords[2])
+{
+    for (int j = 0; j < matrix.cols; j++) // ciclo sulle colonne
+    {
+        for (int i = startingRow; i < matrix.rows; i++)
+        {
+            if (matrix.matrix[i][j] != 0)
+            {
+                coords[0] = i;
+                coords[1] = j;
+
+                return;
+            }
+        }
+    }
+
+    // se non trova elementi non-zero, ritorna una riga fuori dallo scope (triggerando la condizione sentinella)
+    coords[0] = matrix.rows + 1;
+    coords[1] = matrix.cols + 1;
+    return;
+}
+
+// function that swaps two columns of a matrix
+void swapColumns(Matrix matrix, int col1, int col2)
+{
+    float temp;
+    for (int i = 0; i < matrix.rows; i++)
+    {
+        temp = matrix.matrix[i][col2];
+        matrix.matrix[i][col2] = matrix.matrix[i][col1];
+        matrix.matrix[i][col1] = temp;
+    }
+}
+
+void sortPivots(Matrix matrix)
+{
+}
+
+// function that reduces a matrix to its echelon form, using the Gauss algorithm
 void echelonForm(Matrix matrix)
 {
-    // prototipo di funzione con scope minimo
-    void firstNonZero(Matrix matrix, int startingRow, int coords[2]);
-
     int i;             // iteratore del  while sulle righe
     int pivotCol;      // memorizza la colonna del pivot su cui si sta correntemente lavorando
     int nonZeroRow;    // contiene l'indice della riga con primo elemento non nullo, in ordine di colonna
@@ -152,7 +188,7 @@ void echelonForm(Matrix matrix)
         nonZeroRow = coords[0];
         pivotCol = coords[1];
 
-        if(nonZeroRow > matrix.rows) // se non trova elementi non-zero, termina
+        if (nonZeroRow > matrix.rows) // se non trova elementi non-zero, termina
         {
             return;
         }
@@ -179,81 +215,36 @@ void echelonForm(Matrix matrix)
     }
 }
 
-//function that totally reduces a matrix to its reduced row echelon form, using the Gauss-Jordan algorithm
+// function that totally reduces a matrix to its reduced row echelon form, using the Gauss-Jordan algorithm
 void GaussJordanForm(Matrix matrix)
 {
-    void swapColumns(Matrix matrix, int col1, int col2);
-    void sortPivots(float **matrix, int rows, int cols);
+    int pivotCol, pivotRow; // memorizza la colonna del pivot su cui si sta correntemente lavorando
+    int row = 0;            // indica la riga alla quale si sta lavorando
+    int coords[2];          // array delle coordinate del pivot sul quale si sta lavorando
+    float coefficient;      // coefficiente moltiplicativo
 
-    int pivotCol;      // memorizza la colonna del pivot su cui si sta correntemente lavorando
-    int row = 0;       // indica la riga alla quale si sta lavorando
-    int coords[2];     // array delle coordinate del pivot sul quale si sta lavorando
-    float coefficient; // coefficiente moltiplicativo
-
-    echelonForm(matrix);
-    for(int i=matrix.rows-1; i>=0; i--)
+    for (int i = matrix.rows - 1; i >= 0; i--)
     {
-        for(int j=0; j<matrix.cols; j++)
+        for (int j = 0; j < matrix.cols; j++)
         {
-            if(matrix.matrix[i][j])
+            if (matrix.matrix[i][j])
             {
-                coefficient = 1/matrix.matrix[i][j];
+                coefficient = 1 / matrix.matrix[i][j];
                 multiplyRow(matrix, i, coefficient);
-                int k = i-1;
-                
-                while(k>=0)
+                int k = i - 1;
+
+                while (k >= 0)
                 {
-                    if(matrix.matrix[k][j])
+                    if (matrix.matrix[k][j])
                     {
                         coefficient = -matrix.matrix[k][j];
                         combineRows(matrix, k, i, coefficient);
                     }
                     k--;
                 }
-                
+
                 break;
             }
         }
     }
-}
-
-//function that swaps two columns of a matrix
-void swapColumns(Matrix matrix, int col1, int col2)
-{
-    float temp;
-    for(int i=0; i<matrix.rows; i++)
-    {
-        temp = matrix.matrix[i][col2];
-        matrix.matrix[i][col2] = matrix.matrix[i][col1];
-        matrix.matrix[i][col1] = temp;
-    }
-}
-
-void sortPivots(float **matrix, int rows, int cols)
-{
-    void firstNonZero(Matrix matrix, int startingRow, int coords[2]);
-    
-}
-
-//functions that returns the first non-zero element of a matrix, starting from a given row
-void firstNonZero(Matrix matrix, int startingRow, int coords[2])
-{
-    for (int j = 0; j < matrix.cols; j++) // ciclo sulle colonne
-    {
-        for (int i = startingRow; i < matrix.rows; i++)
-        {
-            if (matrix.matrix[i][j] != 0)
-            {
-                coords[0] = i;
-                coords[1] = j;
-
-                return;
-            }
-        }
-    }
-
-    // se non trova elementi non-zero, ritorna una riga fuori dallo scope (triggerando la condizione sentinella)
-    coords[0] = matrix.rows + 1;
-    coords[1] = matrix.cols + 1;
-    return;
 }
