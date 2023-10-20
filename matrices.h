@@ -22,4 +22,4 @@ void swapColumns(Matrix matrix, int col1, int col2);
 
 //big algorithms
 void echelonForm(Matrix matrix);
-void GaussJordanForm(Matrix matrix);
+void GaussJordanForm(Matrix matrix, int complete);

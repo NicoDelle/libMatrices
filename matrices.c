@@ -216,23 +216,30 @@ void echelonForm(Matrix matrix)
 }
 
 // function that totally reduces a matrix to its reduced row echelon form, using the Gauss-Jordan algorithm
-void GaussJordanForm(Matrix matrix)
+void GaussJordanForm(Matrix matrix, int complete)
 {
     int pivotCol, pivotRow; // memorizza la colonna del pivot su cui si sta correntemente lavorando
     int row = 0;            // indica la riga alla quale si sta lavorando
     int coords[2];          // array delle coordinate del pivot sul quale si sta lavorando
     float coefficient;      // coefficiente moltiplicativo
+    int maxCols = matrix.cols;
+    
+    if (complete)
+    {
+        maxCols--;
+    }
 
+    echelonForm(matrix);
     for (int i = matrix.rows - 1; i >= 0; i--)
     {
-        for (int j = 0; j < matrix.cols; j++)
+        for (int j = 0; j < maxCols; j++)
         {
             if (matrix.matrix[i][j])
             {
                 coefficient = 1 / matrix.matrix[i][j];
                 multiplyRow(matrix, i, coefficient);
-                int k = i - 1;
 
+                int k = i - 1;
                 while (k >= 0)
                 {
                     if (matrix.matrix[k][j])
