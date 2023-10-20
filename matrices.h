@@ -15,4 +15,3 @@ void combineRows(Matrix matrix, int row1, int row2, float factor);
 void swapRows(Matrix matrix, int row1, int row2);
 void echelonForm(Matrix matrix);
 void GaussJordanForm(Matrix matrix);
-//sistema da qui in poi gli headers
