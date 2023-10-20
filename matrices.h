@@ -1,10 +1,18 @@
+//types
+typedef struct {
+    int rows;
+    int cols;
+    float **matrix;
+} Matrix; //matrix type: has rows, cols, matrix attributes
+
 float **buildMatrix(int rows, int cols, int zeros);
-void printMatrix(float **matrix, int rows, int cols);
-void dumpMatrix(float **matrix, int rows);
-float **traspose(float **matrix, int rows, int cols, float **emptyTrasposed);
-float **dotProduct(float **matrix1, int rows1, int cols1, float **matrix2, int rows2, int cols2,float **product);
-void multiplyRow(float **matrix, int row, int cols, float factor);
-void combineRows(float **matrix, int row1, int row2, float factor, int cols);
-void swapRows(float **matrix, int row1, int row2, int cols);
-void echelonForm(float **matrix, int rows, int cols);
-void GaussJordanForm(float **matrix, int rows, int cols);
+void printMatrix(Matrix matrix);
+void dumpMatrix(Matrix matrix);
+Matrix traspose(Matrix matrix);
+Matrix dotProduct(Matrix matrix1, Matrix matrix2);
+void multiplyRow(Matrix matrix, int row, float factor);
+void combineRows(Matrix matrix, int row1, int row2, float factor);
+void swapRows(Matrix matrix, int row1, int row2);
+void echelonForm(Matrix matrix);
+void GaussJordanForm(Matrix matrix);
+//sistema da qui in poi gli headers

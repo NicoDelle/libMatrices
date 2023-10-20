@@ -15,3 +15,10 @@ cd libMatrices && gcc -c matrices.c -o matrices.o && ar rcs libMatrices.a matric
 
 to run-->
 gcc -g -o mat Matrices.c libMatrices\matrices.c -IlibMatrices
+
+affinamento:
+Metti le colonne contenenti un pivot nelle prime posizioni. (si assume che la matrice sia ridotta a scala)
+-->
+Trova il pivot della prima colonna e segna la riga
+Nella colonna successiva, se la riga dopo quella segnata è nulla, sostituiscila con la successiva, e passa alla prossima colonna rifacendo la stessa cosa
+ripeti tutti i passaggi, finché i pivot della matrice sono tutti nelle prime colonne (e la matrice è ancora ordinata a scala)
