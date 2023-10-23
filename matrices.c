@@ -156,6 +156,24 @@ void firstNonZero(Matrix matrix, int startingRow, int coords[2])
     return;
 }
 
+// function that takes a matrix (reduced to echelon form) and returns its rank
+int rank(Matrix matrix)
+{
+    int row, col;
+    row = col = 0;
+
+    while (row < matrix.rows && col < matrix.cols)
+    {
+        if (matrix.matrix[row][col] != 0)
+        {
+            row++;
+        }
+        col++;
+    }
+
+    return row; // il numero di righe contenenti un valore non nullo (se la matrice è ridotta a scala) coindice col rango della matrice
+}
+
 // function that swaps two columns of a matrix
 void swapColumns(Matrix matrix, int col1, int col2)
 {
@@ -168,8 +186,17 @@ void swapColumns(Matrix matrix, int col1, int col2)
     }
 }
 
-void sortPivots(Matrix matrix)
+// function that moves al the columns containing pivots to the left of the matrix and returns the new order of the columns with respect to the original matrix
+int *sortPivots(Matrix matrix)
 {
+    int row = 0, col = 0;
+    int nonZero[2];
+    int pivot;
+    int *order = (int *)malloc(sizeof(int) * matrix.cols);
+    for (int n = 0; n < matrix.cols; n++)
+    {
+        order[n] = n;
+    }
 }
 
 // function that reduces a matrix to its echelon form, using the Gauss algorithm
@@ -223,7 +250,7 @@ void GaussJordanForm(Matrix matrix, int complete)
     int coords[2];          // array delle coordinate del pivot sul quale si sta lavorando
     float coefficient;      // coefficiente moltiplicativo
     int maxCols = matrix.cols;
-    
+
     if (complete)
     {
         maxCols--;
