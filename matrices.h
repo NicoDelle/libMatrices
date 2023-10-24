@@ -1,16 +1,20 @@
 //types
+
+//matrix type: has rows, cols, matrix attributes
 typedef struct {
     int rows;
     int cols;
     float **matrix;
-} Matrix; //matrix type: has rows, cols, matrix attributes
+} Matrix;
 
 //code utils
+
 float **buildMatrix(int rows, int cols, int zeros);
 void printMatrix(Matrix matrix);
 void dumpMatrix(Matrix matrix);
 
 //math instruments
+
 Matrix traspose(Matrix matrix);
 Matrix dotProduct(Matrix matrix1, Matrix matrix2);
 void multiplyRow(Matrix matrix, int row, float factor);

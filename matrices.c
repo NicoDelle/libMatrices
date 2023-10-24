@@ -208,20 +208,24 @@ int *sortPivots(Matrix matrix)
         }
 
         // ho iterato su tutta la "diagonale" della matrice, ed è tutta non nulla. Se la matrice è ridotta a scala, significa tutti i pivot sono al loro posto.
-        if (row == matrix.rows || col == matrix.cols || !matrix.matrix[row][col])
+        if ((row == matrix.rows || col == matrix.cols || matrix.matrix[row][col]) 
+        || ((row == matrix.rows - 1 || col == matrix.cols - 1) && !matrix.matrix[row][col]))
         {
             return order;
         }
 
         //altrimenti, significa che ho trovato un elemento nullo dove doveva stare un pivot: lo cerco a quella riga e lo sposto nella posizione giusta
         int j = col + 1;
-        while (!matrix.matrix[row][j])
+        while (j < matrix.cols && !matrix.matrix[row][j])
         {
             j++;
         }
-        swapColumns(matrix, col, j);
-        order[col] = j;
-        order[j] = col;     
+        if (j != matrix.cols)
+        {
+            swapColumns(matrix, col, j);
+            order[col] = j;
+            order[j] = col;
+        }
     }
 
     return order;
