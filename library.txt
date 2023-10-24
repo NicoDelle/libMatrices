@@ -19,17 +19,7 @@ gcc -g -o mat Matrices.c libMatrices\matrices.c -IlibMatrices
 affinamento:
 HAI UNA MATRICE TOTALMENTE RIDOTTA 
 Metti le colonne contenenti un pivot nelle prime posizioni. (si assume che la matrice sia ridotta a scala)
--->
-Trova il pivot della prima colonna e segna la riga
-Nella colonna successiva, se la riga dopo quella segnata è nulla, sostituiscila con la successiva, e passa alla prossima colonna rifacendo la stessa cosa
-ripeti tutti i passaggi, finché i pivot della matrice sono tutti nelle prime colonne (e la matrice è ancora ordinata a scala)
--->
-i passi sono:
-sei a un pivot
-se la riga dopo non ha un pivot,
-    scambia le righe
-se la matrice finisce,
-    ripeti dall'inizio
-ripeti per matrix.cols volte
-
-la 
+->
+controllo gli elementi sulla diagonale: sono 0 o 1.
+Se è 0, inizio a controllare sulla stessa riga finché non trovo un 1, poi scambio la prima colonna controllata con quella trovata
+Se è 1, controlla il prossimo elemeno
