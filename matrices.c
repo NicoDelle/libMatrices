@@ -189,42 +189,34 @@ void swapColumns(Matrix matrix, int col1, int col2)
 // function that moves al the columns containing pivots to the left of the matrix and returns the new order of the columns with respect to the original matrix
 int *sortPivots(Matrix matrix)
 {
-    int nonZero[2];
-    int pivot;
-    int *order = (int *)malloc(sizeof(int) * matrix.cols);
+    int *order = (int *)malloc(sizeof(int) * matrix.cols);//take note of the swapping of columns 
+    float *temp = (float *)malloc(sizeof(float) * matrix.cols);
     for (int n = 0; n < matrix.cols; n++) // inizializzazione di un array di posizioni
     {
         order[n] = n;
     }
-
-    //algoritmo per riordinare le colonne
-    int row = 0, col = 0;
     for (int i = 0; i < rank(matrix); i++)
     {
-        while (row < matrix.rows && col < matrix.cols && matrix.matrix[row][col])
+        if(!matrix.matrix[i][i])
         {
-            col++;
-            row++;
-        }
-
-        // ho iterato su tutta la "diagonale" della matrice, ed è tutta non nulla. Se la matrice è ridotta a scala, significa tutti i pivot sono al loro posto.
-        if ((row == matrix.rows || col == matrix.cols || matrix.matrix[row][col]) 
-        || ((row == matrix.rows - 1 || col == matrix.cols - 1) && !matrix.matrix[row][col]))
-        {
-            return order;
-        }
-
-        //altrimenti, significa che ho trovato un elemento nullo dove doveva stare un pivot: lo cerco a quella riga e lo sposto nella posizione giusta
-        int j = col + 1;
-        while (j < matrix.cols && !matrix.matrix[row][j])
-        {
-            j++;
-        }
-        if (j != matrix.cols)
-        {
-            swapColumns(matrix, col, j);
-            order[col] = j;
-            order[j] = col;
+            int currentCol = order[i]; 
+            for(int row=0; row<matrix.rows; row ++)
+            {
+                temp[i] = matrix.matrix[row][i]; //put the value of last column to 0
+            }
+            for(int col=i; col<matrix.cols-1; col++)
+            {
+                for(int row=0; row<matrix.rows; row ++)
+                {
+                    matrix.matrix[row][col] = matrix.matrix[row][col+1]; //swap every value of a column with the value of the next one
+                }
+                order[col] = order[col+1]; //take note of the swap
+            }
+            for(int row=0; row<matrix.rows; row ++)
+            {
+                matrix.matrix[row][matrix.cols-1] = temp[i]; //put the value of last column to 0
+            }
+            order[matrix.cols-1] = currentCol; //take note of last swap
         }
     }
 
