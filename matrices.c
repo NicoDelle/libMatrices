@@ -54,9 +54,15 @@ void printSolutions(Solutions solutions)
         printf("La matrice non ha soluzioni\n");
         return;
     }
-    else if (solutions.solutions.cols == 1)
+    else if (solutions.dimension == 0)
     {
         printf("La matrice ha una sola soluzione:\n");
+        printf("Free terms:\n");
+        for (int i = 0; i < solutions.solutions.rows; i++)
+        {
+            printf("| %2.2f |\n", solutions.freeTerms[i]);
+        }
+        return;
     }
     else
     {
@@ -66,8 +72,8 @@ void printSolutions(Solutions solutions)
             printf("| %2.2f |\n", solutions.freeTerms[i]);
         }
         printf("\nMatrix:\n");
+        printMatrix(solutions.solutions);
     }
-    printMatrix(solutions.solutions);
     printf("\n");
 }
 
@@ -369,14 +375,8 @@ Solutions findSolutions(Matrix matrix)
     int rank1;
     int pivotCoords[2];
     int *order = malloc(sizeof(int) * matrix.cols);
-
-    printf("Matrix:\n");
-    printMatrix(matrix);
     
     echelonForm(matrix);
-    printf("Echelon form:\n");
-    printMatrix(matrix);
-
     rank1 = rank(matrix);
     firstNonZero(matrix, rank1, pivotCoords);
     if (pivotCoords[1] == matrix.cols - 1)
@@ -386,8 +386,6 @@ Solutions findSolutions(Matrix matrix)
     }
 
     GaussJordanForm(matrix, COMPLETE);
-    printf("Gauss-Jordan form:\n");
-    printMatrix(matrix);
 
     //ricavo i termini noti dopo la riduzione totale
     for (int i = 0; i < matrix.rows; i++)
@@ -396,15 +394,23 @@ Solutions findSolutions(Matrix matrix)
     }
 
     //ricava le soluzioni
-    solutions.solutions.rows = matrix.rows;
-    solutions.solutions.cols = matrix.cols - rank1;
+    solutions.solutions.rows = matrix.cols - 1;
+    solutions.solutions.cols = matrix.cols - rank1 - 1;
+    if (solutions.solutions.cols == -1)
+    {
+        solutions.solutions.matrix = buildMatrix(solutions.solutions.rows, solutions.solutions.cols + 2, ZEROS);
+        solutions.dimension = 0;
+        return solutions;
+    }
+
     solutions.solutions.matrix = buildMatrix(solutions.solutions.rows, solutions.solutions.cols, ZEROS);
     solutions.dimension = solutions.solutions.cols;
 
     order = sortPivots(matrix);
+    //looks for the matrix right of the identity matrix
     for (int i = 0; i < rank1; i++)
     {
-        for (int j = 0; j < matrix.cols - rank1; j++)
+        for (int j = 0; j < matrix.cols - rank1 - 1; j++)
         {
             solutions.solutions.matrix[i][j] = - matrix.matrix[i][j + rank1];
         }
