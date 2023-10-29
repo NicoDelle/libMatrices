@@ -7,11 +7,25 @@ typedef struct {
     float **matrix;
 } Matrix;
 
+typedef struct {
+    float *freeTerms;
+    Matrix solutions;
+    int dimension;
+} Solutions;
+
+typedef struct {
+    
+} tests;
+
+
+
 //code utils
 
 float **buildMatrix(int rows, int cols, int zeros);
 void printMatrix(Matrix matrix);
+void printSolutions(Solutions solutions);
 void dumpMatrix(Matrix matrix);
+void dumpSolution(Solutions solutions);
 
 //math instruments
 
@@ -24,7 +38,10 @@ int rank(Matrix matrix);
 void firstNonZero(Matrix matrix, int startingRow, int coords[2]);
 void swapColumns(Matrix matrix, int col1, int col2);
 int *sortPivots(Matrix matrix);
+void sortSolutions(Solutions solutions, int *order);
 
 //big algorithms
+
 void echelonForm(Matrix matrix);
 void GaussJordanForm(Matrix matrix, int complete);
+Solutions findSolutions(Matrix matrix);

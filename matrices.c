@@ -3,6 +3,7 @@
 #include "matrices.h"
 #define ZEROS 1
 #define EMPTY 0
+#define COMPLETE 1
 
 // function that builds a matrix. The last argument is a flag that indicates if the matrix should be filled with zeros or not
 float **buildMatrix(int rows, int cols, int zeros)
@@ -46,6 +47,30 @@ void printMatrix(Matrix matrix)
     printf("\n");
 }
 
+void printSolutions(Solutions solutions)
+{
+    if (solutions.solutions.rows == 0)
+    {
+        printf("La matrice non ha soluzioni\n");
+        return;
+    }
+    else if (solutions.solutions.cols == 1)
+    {
+        printf("La matrice ha una sola soluzione:\n");
+    }
+    else
+    {
+        printf("Free terms:\n");
+        for (int i = 0; i < solutions.solutions.rows; i++)
+        {
+            printf("| %2.2f |\n", solutions.freeTerms[i]);
+        }
+        printf("\nMatrix:\n");
+    }
+    printMatrix(solutions.solutions);
+    printf("\n");
+}
+
 // function that frees the memory allocated for a matrix
 void dumpMatrix(Matrix matrix)
 {
@@ -54,6 +79,12 @@ void dumpMatrix(Matrix matrix)
         free(matrix.matrix[i]);
     }
     free(matrix.matrix);
+}
+
+void dumpSolution(Solutions solutions)
+{
+    dumpMatrix(solutions.solutions);
+    free(solutions.freeTerms);
 }
 
 // function that trasposes a matrix. The last argument is a pointer to the (cols*rows) matrix where the trasposed matrix will be stored
@@ -75,7 +106,7 @@ Matrix traspose(Matrix matrix)
     return trasposed;
 }
 
-// function that computes the product of two matrices. The function returns a pointer to the product matrix, the last argument ist also a pointer to the (rows1*cols2) matrix where the product will be stored
+// function that computes the product of two matrices. The function returns a pointer to the product matrix
 Matrix dotProduct(Matrix matrix1, Matrix matrix2)
 {
     Matrix product;
@@ -231,6 +262,27 @@ int *sortPivots(Matrix matrix)
     return order;
 }
 
+void sortSolutions(Solutions solutions, int *order)
+{
+    int i = 0;
+    int temp;
+    while (i < solutions.solutions.rows)
+    {
+        if (order[i] != i)
+        {
+            swapRows(solutions.solutions, i, order[i]);
+            temp = solutions.freeTerms[i];
+            solutions.freeTerms[i] = solutions.freeTerms[order[i]];
+            solutions.freeTerms[order[i]] = temp;
+
+            temp = order[i];
+            order[i] = order[temp];
+            order[temp] = temp;
+        }
+        i++;
+    }
+}
+
 // function that reduces a matrix to its echelon form, using the Gauss algorithm
 void echelonForm(Matrix matrix)
 {
@@ -313,4 +365,71 @@ void GaussJordanForm(Matrix matrix, int complete)
             }
         }
     }
+}
+
+//function that solves the linear system associated to the given matrix. The last column of the matrix is taken as the vector of the free terms
+Solutions findSolutions(Matrix matrix)
+{
+    Solutions solutions;
+    Matrix coeffMatrix;
+    solutions.freeTerms = malloc(sizeof(float) * matrix.cols);
+
+    int rank1;
+    int pivotCoords[2];
+    int *order = malloc(sizeof(int) * matrix.cols);
+
+    printf("Matrix:\n");
+    printMatrix(matrix);
+    
+    echelonForm(matrix);
+    printf("Echelon form:\n");
+    printMatrix(matrix);
+
+    rank1 = rank(matrix);
+    firstNonZero(matrix, rank1, pivotCoords);
+    if (pivotCoords[1] == matrix.cols - 1)
+    {
+        solutions.solutions.rows = solutions.solutions.cols = 0;
+        return solutions;
+    }
+
+    GaussJordanForm(matrix, COMPLETE);
+    printf("Gauss-Jordan form:\n");
+    printMatrix(matrix);
+
+    //ricavo i termini noti dopo la riduzione totale
+    for (int i = 0; i < matrix.rows; i++)
+    {
+        solutions.freeTerms[i] = matrix.matrix[i][matrix.cols - 1];
+    }
+
+    //ricava le soluzioni
+    solutions.solutions.rows = matrix.rows;
+    solutions.solutions.cols = matrix.cols - rank1;
+    solutions.solutions.matrix = buildMatrix(solutions.solutions.rows, solutions.solutions.cols, ZEROS);
+    solutions.dimension = solutions.solutions.cols;
+
+    order = sortPivots(matrix);
+    for (int i = 0; i < rank1; i++)
+    {
+        for (int j = 0; j < matrix.cols - rank1; j++)
+        {
+            solutions.solutions.matrix[i][j] = - matrix.matrix[i][j + rank1];
+        }
+    }
+    for(int k = rank1; k < solutions.solutions.rows; k++)
+    {
+        solutions.solutions.matrix[k][k - rank1] = 1;
+    }
+
+    for(int i = 0; i < matrix.cols; i++)
+    {
+        if (order[i] != i)
+        {
+            sortSolutions(solutions, order);
+            break;
+        }
+    }
+
+    return solutions;
 }
