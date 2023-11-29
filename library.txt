@@ -16,10 +16,7 @@ cd libMatrices && gcc -c matrices.c -o matrices.o && ar rcs libMatrices.a matric
 to run-->
 gcc -g -o mat Matrices.c libMatrices\matrices.c -IlibMatrices
 
-affinamento:
-HAI UNA MATRICE TOTALMENTE RIDOTTA 
-Metti le colonne contenenti un pivot nelle prime posizioni. (si assume che la matrice sia ridotta a scala)
-->
-controllo gli elementi sulla diagonale: sono 0 o 1.
-Se è 0, inizio a controllare sulla stessa riga finché non trovo un 1, poi scambio la prima colonna controllata con quella trovata
-Se è 1, controlla il prossimo elemeno
+TESTS
+1 2 0 3 2
+0 0 1 4 5
+0 0 0 0 0 
