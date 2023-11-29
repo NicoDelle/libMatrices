@@ -31,6 +31,39 @@ float **buildMatrix(int rows, int cols, int zeros)
     return matrix;
 }
 
+float** buildFromFile(int rows, int cols, FILE* fp)
+{
+    float **matrix;
+    matrix = malloc(rows * sizeof(*matrix));
+    char c;
+    int n;
+
+    if (fp == NULL) {
+        printf("Failed to open file 1\n");
+        matrix = NULL;
+        return matrix;
+    }
+
+    for (int i = 0; i < rows; i++)
+    {
+        matrix[i] = malloc(cols * sizeof(*matrix[i]));
+        for (int j = 0; j < cols; j++)
+        {
+                
+                while ((c = fgetc(fp)) != ',' && c != '\n' && c != EOF)
+                {
+                    n = n * 10 + (c - '0');
+                }
+                matrix[i][j] = n;
+                n = 0;
+        }
+    }
+    fclose(fp);
+
+    return matrix;
+
+}
+
 // function that prints a matrix
 void printMatrix(Matrix matrix)
 {
@@ -94,7 +127,7 @@ void dumpSolution(Solutions solutions)
 }
 
 // function that trasposes a matrix. The last argument is a pointer to the (cols*rows) matrix where the trasposed matrix will be stored
-Matrix traspose(Matrix matrix)
+Matrix transposeMatrix(Matrix matrix)
 {
     Matrix trasposed;
     trasposed.rows = matrix.cols;
@@ -379,7 +412,7 @@ Solutions findSolutions(Matrix matrix)
     echelonForm(matrix);
     rank1 = rank(matrix);
     firstNonZero(matrix, rank1, pivotCoords);
-    if (pivotCoords[1] == matrix.cols - 1)
+    if (pivotCoords[1] == matrix.cols - 1) //the linear system has no solutions
     {
         solutions.solutions.rows = solutions.solutions.cols = 0;
         return solutions;
@@ -400,6 +433,7 @@ Solutions findSolutions(Matrix matrix)
     {
         solutions.solutions.matrix = buildMatrix(solutions.solutions.rows, solutions.solutions.cols + 2, ZEROS);
         solutions.dimension = 0;
+
         return solutions;
     }
 
@@ -407,7 +441,7 @@ Solutions findSolutions(Matrix matrix)
     solutions.dimension = solutions.solutions.cols;
 
     order = sortPivots(matrix);
-    //looks for the matrix right of the identity matrix
+    //looks for the matrix right of the identity matrix and puts it in solutions.solutions
     for (int i = 0; i < rank1; i++)
     {
         for (int j = 0; j < matrix.cols - rank1 - 1; j++)
@@ -415,6 +449,8 @@ Solutions findSolutions(Matrix matrix)
             solutions.solutions.matrix[i][j] = - matrix.matrix[i][j + rank1];
         }
     }
+
+    //fills the diagonal with ones
     for(int k = rank1; k < solutions.solutions.rows; k++)
     {
         solutions.solutions.matrix[k][k - rank1] = 1;

@@ -1,3 +1,5 @@
+#include <stdio.h>
+
 //types
 
 //matrix type: has rows, cols, matrix attributes
@@ -13,15 +15,10 @@ typedef struct {
     int dimension;
 } Solutions;
 
-typedef struct {
-    
-} tests;
-
-
-
 //code utils
 
 float **buildMatrix(int rows, int cols, int zeros);
+float **buildFromFile(int rows, int cols, FILE *fp);
 void printMatrix(Matrix matrix);
 void printSolutions(Solutions solutions);
 void dumpMatrix(Matrix matrix);
@@ -29,7 +26,7 @@ void dumpSolution(Solutions solutions);
 
 //math instruments
 
-Matrix traspose(Matrix matrix);
+Matrix transposeMatrix(Matrix matrix);
 Matrix dotProduct(Matrix matrix1, Matrix matrix2);
 void multiplyRow(Matrix matrix, int row, float factor);
 void combineRows(Matrix matrix, int row1, int row2, float factor);
